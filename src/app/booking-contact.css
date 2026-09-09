@@ -1,0 +1,81 @@
+.booking-dialog {
+  width: min(1100px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--canvas);
+  color: var(--ink);
+  margin: auto;
+}
+.booking-dialog::backdrop {
+  background: rgb(3 7 17 / 65%);
+}
+.booking-dialog-content {
+  padding: 24px;
+}
+.booking-dialog-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.booking-dialog-header h2 {
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+.booking-dialog-header button {
+  min-height: 44px;
+  padding-inline: 12px;
+  color: var(--ink);
+  background: none;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.booking-calendar {
+  min-height: 560px;
+}
+.booking-fallback {
+  display: inline-block;
+  margin-top: 16px;
+  color: var(--muted);
+  font-size: 13px;
+  text-decoration: underline;
+}
+.navigation-field nav .booking-link {
+  font-weight: 600;
+}
+.contact-form .form-bottom {
+  justify-content: flex-end;
+}
+.contact-form button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+.contact-form .form-help {
+  min-height: 24px;
+}
+.contact-form .form-trap {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+@media (max-width: 639px) {
+  .booking-dialog {
+    width: calc(100% - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .booking-dialog-content {
+    padding: 16px;
+  }
+  .booking-dialog-header h2 {
+    font-size: 17px;
+  }
+  .booking-calendar {
+    min-height: 620px;
+  }
+}

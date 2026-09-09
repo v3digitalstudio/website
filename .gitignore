@@ -1,0 +1,30 @@
+node_modules/
+.next/
+.open-next/
+.cloudflare/
+out/
+.wrangler/
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
+*.tsbuildinfo
+cloudflare-env.d.ts
+playwright-report/
+test-results/
+.DS_Store
+.codegraph
+
+# Local design and QA evidence
+.omo/
+docs/*-qa/
+docs/qa-captures/
+docs/*-plan.md
+
+.pnpm-store/
+
+# Local working notes and archived design explorations
+/docs/
+/DESIGN.md
+/CLAUDE.md
+/archive/

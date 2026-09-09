@@ -1,0 +1,81 @@
+.navigation-field nav a[href="#contact"] {
+  font-weight: 600;
+}
+
+.field-service-intro > p {
+  margin-top: 24px;
+  max-width: 40ch;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+.field-testimonial {
+  position: relative;
+  isolation: isolate;
+  margin-top: var(--space);
+  margin-inline: calc(-1 * var(--gutter));
+  padding: 128px var(--gutter);
+  background: var(--canvas);
+}
+.field-testimonial-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.field-testimonial-background .field-hero-contours {
+  inset: 0;
+  height: 100%;
+  mask-image: linear-gradient(145deg, transparent 12%, #000 90%);
+}
+.field-testimonial figure {
+  position: relative;
+  max-width: 896px;
+  margin-inline: auto;
+}
+.field-testimonial blockquote {
+  position: relative;
+  margin: 0;
+  font-size: 36px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  text-wrap: pretty;
+}
+.field-testimonial blockquote p::before {
+  position: absolute;
+  right: 100%;
+  content: "“";
+}
+.field-testimonial blockquote p::after {
+  content: "”";
+}
+.field-testimonial figcaption {
+  display: grid;
+  gap: 4px;
+  margin-top: 40px;
+  color: var(--muted);
+  font-size: 14px;
+}
+.field-testimonial figcaption > span:first-child {
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 600;
+}
+@media (max-width: 767px) {
+  .field-testimonial {
+    padding-block: 112px;
+  }
+}
+@media (max-width: 639px) {
+  .field-testimonial {
+    padding-block: 64px;
+  }
+  .field-testimonial blockquote {
+    font-size: 30px;
+  }
+  .field-testimonial blockquote p::before {
+    position: static;
+  }
+}

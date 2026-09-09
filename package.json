@@ -1,0 +1,45 @@
+{
+  "name": "v3digitalstudio",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@12.3.4",
+  "scripts": {
+    "dev": "next dev --hostname 0.0.0.0",
+    "build": "next build",
+    "start": "wrangler dev --ip 0.0.0.0 --port 3000 --persist-to .wrangler/state-3000",
+    "typecheck": "pnpm cf-typegen && tsc --noEmit && tsc --noEmit -p tsconfig.worker.json",
+    "lint": "biome check .",
+    "format": "biome check --write .",
+    "build:cloudflare": "pnpm build",
+    "preview": "pnpm build && wrangler dev --port 8787 --persist-to .wrangler/state-8787",
+    "deploy": "pnpm build && wrangler deploy",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts",
+    "doctor": "react-doctor . --yes",
+    "dev:api": "wrangler dev --port 8788 --persist-to .wrangler/state-api"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@calcom/embed-react": "^1.5.3",
+    "ky": "^2.1.0",
+    "next": "16.3.4",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "resend": "^6.26.0",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.12",
+    "@playwright/test": "1.63.0",
+    "@types/node": "26.5.0",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "playwright": "1.63.0",
+    "react-doctor": "0.9.13",
+    "react-grab": "0.2.0",
+    "react-scan": "0.5.7",
+    "typescript": "7.0.2",
+    "wrangler": "4.129.1"
+  }
+}

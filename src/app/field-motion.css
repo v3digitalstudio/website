@@ -1,0 +1,56 @@
+.hero-field {
+  position: relative;
+  isolation: isolate;
+}
+.page-field .hero-field.design-entrance {
+  animation: none;
+}
+.field-hero-contours {
+  position: absolute;
+  inset: -64px 0 0;
+  z-index: -1;
+  width: 100%;
+  height: calc(100% + 64px);
+  pointer-events: none;
+  color: var(--ink);
+  mask-image: linear-gradient(120deg, transparent 8%, #000 78%);
+}
+.field-contour-lines {
+  fill: none;
+  stroke: currentColor;
+  stroke-opacity: 0.055;
+}
+.field-contour-trail {
+  fill: none;
+  stroke: currentColor;
+  animation: field-contour-fade 1s ease-out both;
+}
+.field-contour-trail circle {
+  fill: currentColor;
+  stroke: none;
+}
+.page-field .hero-art {
+  background: transparent;
+}
+.page-field [data-field-reveal="pending"] {
+  opacity: 0;
+}
+@keyframes field-contour-fade {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.motion-paused .field-contour-trail {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .field-contour-trail {
+    display: none;
+  }
+  .page-field [data-field-reveal="pending"] {
+    opacity: 1;
+  }
+}
