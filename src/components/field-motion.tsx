@@ -68,7 +68,7 @@ export function FieldMotion({
             );
           });
       },
-      { rootMargin: "0px 0px -100px 0px" },
+      { threshold: 0 },
     );
 
     function showAll() {
