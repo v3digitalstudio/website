@@ -6,17 +6,13 @@
     "directory": ".cloudflare/assets",
     "not_found_handling": "404-page",
     "binding": "ASSETS",
-    "run_worker_first": [
-      "/api/*"
-    ]
+    "run_worker_first": ["/api/*"]
   },
   "observability": {
     "enabled": true
   },
   "main": "worker/index.ts",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "RESEND_FROM": "V3 Digital Studio <forms@v3digital.studio>",
     "DEV_ORIGIN": ""
@@ -32,8 +28,15 @@
     }
   ],
   "secrets": {
-    "required": [
-      "RESEND_API_KEY"
-    ]
-  }
+    "required": ["RESEND_API_KEY"]
+  },
+  "account_id": "a212cf4f1a07edcecca8e4d59afe78f4",
+  "routes": [
+    {
+      "pattern": "v3digital.studio",
+      "custom_domain": true
+    }
+  ],
+  "workers_dev": false,
+  "preview_urls": false
 }
