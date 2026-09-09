@@ -40,6 +40,6 @@
     "react-grab": "0.2.0",
     "react-scan": "0.5.7",
     "typescript": "7.0.2",
-    "wrangler": "4.129.1"
+    "wrangler": "4.130.0"
   }
 }
