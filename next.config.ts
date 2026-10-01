@@ -1,8 +1,17 @@
+import { networkInterfaces } from "node:os";
 import type { NextConfig } from "next";
 
 const nextConfig = {
   ...(process.env.NODE_ENV === "development"
     ? {
+        allowedDevOrigins: Object.values(networkInterfaces()).flatMap(
+          (addresses) =>
+            (addresses ?? [])
+              .filter(
+                (address) => address.family === "IPv4" && !address.internal,
+              )
+              .map((address) => address.address),
+        ),
         rewrites: async () => [
           {
             source: "/api/:path*",
