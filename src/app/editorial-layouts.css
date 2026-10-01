@@ -19,6 +19,10 @@
 .page-field .hero-field h1 {
   font-size: clamp(72px, 8vw, 120px);
 }
+.page-field .hero-field .art-caption {
+  display: flex;
+  justify-content: center;
+}
 .page-field .studio-note {
   display: block;
   max-width: 900px;
@@ -199,5 +203,49 @@
   }
   .page-field .hero-field .art-stage {
     padding: 0;
+  }
+}
+
+@media (min-width: 1600px) {
+  .page-field {
+    --gutter: clamp(64px, 4vw, 96px);
+    --space: clamp(96px, 6vw, 128px);
+    --wide-gap: clamp(64px, 4vw, 96px);
+    --wide-display: clamp(120px, 7.5vw, 160px);
+    max-width: min(90vw, 2048px);
+    padding-inline: var(--gutter);
+  }
+  .page-field .hero-field .hero-layout {
+    min-height: clamp(760px, 47.5vw, 960px);
+    gap: clamp(56px, 3.5vw, 80px);
+  }
+  .page-field .hero-field h1,
+  .page-field .footer-field .footer-statement {
+    font-size: var(--wide-display);
+  }
+  .page-field .hero-field .hero-description {
+    max-width: clamp(335px, 20.9375vw, 440px);
+  }
+  .page-field .hero-description > p {
+    font-size: clamp(15px, 0.9375vw, 18px);
+  }
+  .page-field .sculpture {
+    max-width: 800px;
+  }
+  .page-field .project-card {
+    gap: var(--wide-gap);
+    padding-bottom: var(--wide-gap);
+  }
+  .page-field .project-preview {
+    height: clamp(350px, 21.875vw, 480px);
+  }
+  .page-field .product-window {
+    max-width: 760px;
+  }
+  .page-field .field-services {
+    column-gap: clamp(80px, 5vw, 112px);
+  }
+  .page-field .navigation-field .navigation-menu {
+    right: max(32px, calc((100vw - 2048px) / 2 + var(--gutter)));
   }
 }
