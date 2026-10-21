@@ -14,5 +14,5 @@ pnpm dev
 ## Deploy
 
 ```sh
-pnpm deploy
+pnpm run deploy
 ```
