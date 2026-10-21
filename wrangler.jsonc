@@ -28,7 +28,7 @@
     }
   ],
   "secrets": {
-    "required": ["RESEND_API_KEY"]
+    "required": ["RESEND_API_KEY", "TURNSTILE_SECRET_KEY"]
   },
   "account_id": "a212cf4f1a07edcecca8e4d59afe78f4",
   "routes": [

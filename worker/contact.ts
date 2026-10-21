@@ -12,6 +12,12 @@ const inquiry = z.object({
   project: z.string().trim().min(10).max(4000),
   website: z.string().max(200).default(""),
   requestId: z.uuid(),
+  turnstileToken: z.string().min(1).max(2048),
+});
+const verification = z.object({
+  success: z.boolean(),
+  hostname: z.string().optional(),
+  action: z.string().optional(),
 });
 const json = (body: object, status = 200) =>
   Response.json(body, { status, headers: { "Cache-Control": "no-store" } });
@@ -58,17 +64,30 @@ export async function handleContact(
   if (!parsed.success)
     return json({ error: "Please check the form fields." }, 422);
   const fields = parsed.data;
-  if (fields.website) return json({ error: "Request not accepted." }, 400);
-  if (!env.RESEND_API_KEY)
+  if (fields.website) return json({ ok: true });
+  if (!env.RESEND_API_KEY || !env.TURNSTILE_SECRET_KEY)
     return json(
       { error: "Email is unavailable. Please email us directly." },
       503,
     );
-  const limit = await env.CONTACT_LIMITER.limit({
-    key: request.headers.get("CF-Connecting-IP") ?? "local",
-  });
+  const ip = request.headers.get("CF-Connecting-IP");
+  const limit = await env.CONTACT_LIMITER.limit({ key: ip ?? "local" });
   if (!limit.success)
     return json({ error: "Please try again in a minute." }, 429);
+  const verified = await verifyTurnstile(fields.turnstileToken, ip, env);
+  if (verified === "unavailable")
+    return json(
+      { error: "Verification is unavailable. Please email us directly." },
+      503,
+    );
+  // Cloudflare's local test keys report a placeholder hostname and no action.
+  const strict = env.DEV_ORIGIN === "";
+  if (
+    verified === "rejected" ||
+    (strict &&
+      (verified.hostname !== url.hostname || verified.action !== "contact"))
+  )
+    return json({ error: "Verification failed. Please try again." }, 403);
   const resend = new Resend(env.RESEND_API_KEY);
   const result = await resend.emails.send(
     {
@@ -83,4 +102,34 @@ export async function handleContact(
   if (result.error || !result.data?.id)
     return json({ error: "Email is unavailable. Please try again." }, 502);
   return json({ ok: true });
+}
+
+async function verifyTurnstile(
+  token: string,
+  ip: string | null,
+  env: CloudflareEnv,
+) {
+  let body: unknown;
+  try {
+    const response = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secret: env.TURNSTILE_SECRET_KEY,
+          response: token,
+          ...(ip ? { remoteip: ip } : {}),
+        }),
+        signal: AbortSignal.timeout(5000),
+      },
+    );
+    if (!response.ok) return "unavailable";
+    body = await response.json();
+  } catch {
+    return "unavailable";
+  }
+  const result = verification.safeParse(body);
+  if (!result.success) return "unavailable";
+  return result.data.success ? result.data : "rejected";
 }

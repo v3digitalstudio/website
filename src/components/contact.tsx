@@ -1,23 +1,116 @@
 "use client";
 import ky, { HTTPError } from "ky";
 import type { FormEvent } from "react";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Direction } from "./directions";
 import { Arrow, Heading } from "./primitives";
+
+const turnstileSiteKey =
+  process.env.NODE_ENV === "development"
+    ? "1x00000000000000000000AA"
+    : "0x4AAAAAACnGWpZ1l53Ku5Z9";
+
+type Turnstile = {
+  render(
+    container: HTMLElement,
+    options: {
+      sitekey: string;
+      action: string;
+      appearance: "interaction-only";
+      callback: (token: string) => void;
+      "expired-callback": () => void;
+      "error-callback": () => void;
+    },
+  ): string | undefined;
+  reset(widgetId: string): void;
+  remove(widgetId: string): void;
+};
+declare global {
+  interface Window {
+    turnstile?: Turnstile;
+  }
+}
+
+let turnstileScript: Promise<Turnstile> | undefined;
+function loadTurnstile() {
+  turnstileScript ??= new Promise<Turnstile>((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src =
+      "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
+    script.async = true;
+    script.onload = () =>
+      window.turnstile
+        ? resolve(window.turnstile)
+        : reject(new Error("Turnstile unavailable"));
+    script.onerror = () => {
+      turnstileScript = undefined;
+      script.remove();
+      reject(new Error("Turnstile failed to load"));
+    };
+    document.head.append(script);
+  });
+  return turnstileScript;
+}
 
 export function Contact({ design }: { readonly design: Direction }) {
   const [status, setStatus] = useState<"idle" | "sending" | "sent" | "error">(
     "idle",
   );
   const [message, setMessage] = useState("");
+  const [token, setToken] = useState<string | null>(null);
   const sending = useRef(false);
+  const verifier = useRef<HTMLDivElement>(null);
+  const widget = useRef<{ readonly api: Turnstile; readonly id: string }>(null);
   const attempt = useRef<{
     readonly payload: string;
     readonly id: string;
   } | null>(null);
+  useEffect(() => {
+    const container = verifier.current;
+    if (!container) return;
+    let cancelled = false;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        loadTurnstile()
+          .then((api) => {
+            if (cancelled) return;
+            const id = api.render(container, {
+              sitekey: turnstileSiteKey,
+              action: "contact",
+              appearance: "interaction-only",
+              callback: setToken,
+              "expired-callback": () => setToken(null),
+              "error-callback": () => setToken(null),
+            });
+            if (id) widget.current = { api, id };
+          })
+          .catch(() => {
+            if (!cancelled)
+              setMessage(
+                "Verification couldn’t load. Please email us directly.",
+              );
+          });
+      },
+      { rootMargin: "600px 0px" },
+    );
+    observer.observe(container);
+    return () => {
+      cancelled = true;
+      observer.disconnect();
+      if (widget.current) widget.current.api.remove(widget.current.id);
+      widget.current = null;
+    };
+  }, []);
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (sending.current) return;
+    if (!token) {
+      setStatus("idle");
+      setMessage("Verifying you’re human. Please try again in a moment.");
+      return;
+    }
     const form = event.currentTarget;
     const data = new FormData(form);
     const fields = {
@@ -35,7 +128,11 @@ export function Contact({ design }: { readonly design: Direction }) {
     try {
       const result = await ky
         .post("/api/contact", {
-          json: { ...fields, requestId: attempt.current.id },
+          json: {
+            ...fields,
+            requestId: attempt.current.id,
+            turnstileToken: token,
+          },
           retry: 0,
           timeout: 15000,
         })
@@ -65,6 +162,8 @@ export function Contact({ design }: { readonly design: Direction }) {
       );
     } finally {
       sending.current = false;
+      setToken(null);
+      if (widget.current) widget.current.api.reset(widget.current.id);
     }
   }
   return (
@@ -123,6 +222,7 @@ export function Contact({ design }: { readonly design: Direction }) {
             rows={3}
           />
         </label>
+        <div ref={verifier} className="form-verify" />
         <div className="form-bottom">
           <button
             className="action"
