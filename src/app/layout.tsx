@@ -8,11 +8,20 @@ import "./editorial-layouts.css";
 import "./field-motion.css";
 import "./field-content.css";
 import "./booking-contact.css";
+import "./glitch.css";
 
 const mona = localFont({
   src: "../fonts/Mona-Sans.final.woff2",
   variable: "--font-mona",
   display: "swap",
+});
+// Labs glitch face for the nav entry; downloaded only when the menu shows it.
+const labsDisplay = localFont({
+  src: "../fonts/labs/poppins-600-latin.woff2",
+  weight: "600",
+  variable: "--font-labs-display",
+  display: "swap",
+  preload: false,
 });
 export const metadata: Metadata = {
   metadataBase: new URL("https://v3digital.studio"),
@@ -49,7 +58,11 @@ export default function RootLayout({
   readonly children: ReactNode;
 }) {
   return (
-    <html lang="en" className={mona.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${mona.variable} ${labsDisplay.variable}`}
+      suppressHydrationWarning
+    >
       <body>{children}</body>
     </html>
   );
