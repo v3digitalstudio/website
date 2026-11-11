@@ -17,6 +17,7 @@ export const metadata: Metadata = {
     type: "website",
     url: "https://v3digital.studio/labs/",
     siteName: "V3 Digital Studio",
+    images: [{ url: "/labs/og.png", width: 1200, height: 630, alt: "V3 Labs" }],
   },
 };
 
