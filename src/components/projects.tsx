@@ -105,10 +105,7 @@ export function Projects() {
   return (
     <section id="work" className="section work-section">
       <div className="section-header">
-        <SectionIntro
-          label="Explorations"
-          title="Ideas for a more useful web."
-        />
+        <SectionIntro label="Concepts" title="Ideas for a more useful web." />
         <p className="section-aside">
           Two concept studies exploring how AI can help people find information
           and develop ideas.
