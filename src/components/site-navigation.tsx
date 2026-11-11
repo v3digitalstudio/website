@@ -1,22 +1,30 @@
 "use client";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { BookingLink } from "./booking-link";
+import { GlitchText } from "./labs/glitch";
 import { Logo } from "./primitives";
 
 const links = [
-  ["#work", "Work"],
-  ["#approach", "Services"],
-  ["#studio", "Studio"],
-  ["#contact", "Start a project"],
+  ["/#work", "Work"],
+  ["/#approach", "Services"],
+  ["/#studio", "Studio"],
+  ["/labs/", "Labs"],
+  ["/#contact", "Start a project"],
 ] as const;
 
-export function SiteNavigation() {
+export function SiteNavigation({
+  logoHref,
+}: {
+  readonly logoHref?: string | undefined;
+} = {}) {
+  const onLabs = usePathname().replace(/\/$/, "") === "/labs";
   const [open, setOpen] = useState(false);
   const [hovered, setHovered] = useState(false);
   const visible = open || hovered;
   return (
     <header className="site-navigation navigation-field">
-      <Logo />
+      <Logo href={logoHref} />
       {/* biome-ignore lint/a11y/noStaticElementInteractions: Hover enhances the adjacent keyboard-operable menu button; all links are available by click or keyboard. */}
       <div
         className={"navigation-menu" + (visible ? " is-open" : "")}
@@ -39,7 +47,7 @@ export function SiteNavigation() {
         </button>
         <nav id="navigation-field" aria-label="Main navigation">
           {links.map(([href, label], index) =>
-            href === "#contact" ? (
+            href === "/#contact" ? (
               <BookingLink
                 key={href}
                 className="booking-link"
@@ -55,13 +63,19 @@ export function SiteNavigation() {
               <a
                 key={href}
                 href={href}
+                className={href === "/labs/" ? "nav-labs" : undefined}
+                aria-current={href === "/labs/" && onLabs ? "page" : undefined}
                 onClick={() => {
                   setOpen(false);
                   setHovered(false);
                 }}
               >
                 <span className="nav-index mono">0{index + 1}</span>
-                {label}
+                {href === "/labs/" ? (
+                  <GlitchText variant="small">{label}</GlitchText>
+                ) : (
+                  label
+                )}
               </a>
             ),
           )}

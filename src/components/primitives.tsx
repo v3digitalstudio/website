@@ -67,9 +67,13 @@ export function ActionLink({
   );
 }
 
-export function Logo() {
+export function Logo({
+  href = "#top",
+}: {
+  readonly href?: string | undefined;
+}) {
   return (
-    <a className="brand" href="#top" aria-label="V3 Digital Studio home">
+    <a className="brand" href={href} aria-label="V3 Digital Studio home">
       <span className="brand-mark">
         <picture className="logo-system">
           <source
