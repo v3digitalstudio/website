@@ -645,11 +645,6 @@ img {
   color: var(--muted);
   font-size: 10px;
 }
-.work-note {
-  color: var(--muted);
-  font-size: 10px;
-  margin-top: 24px;
-}
 .capability-list {
   border-top: 1px solid var(--line);
 }
@@ -1319,9 +1314,6 @@ img {
   .project-type {
     font-size: 0;
     gap: 0;
-  }
-  .work-note {
-    font-size: 8px;
   }
   .capability {
     grid-template-columns: 1fr 20px;

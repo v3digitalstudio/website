@@ -134,9 +134,6 @@ export function Projects() {
           </button>
         ))}
       </div>
-      <p className="work-note mono">
-        Self-initiated concepts, not client projects.
-      </p>
       <dialog
         ref={dialog}
         onKeyDown={(event) => {
